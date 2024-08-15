@@ -54,12 +54,14 @@ jQuery(document).ready(function($)
     });
 
     // Handle Add Todo
-    $('#rtd-todo-form').on('submit', function(e) {
+    $('#rtd-todo-form').on('submit', function(e) 
+    {
         e.preventDefault();
 
         var formData = $(this).serialize() + '&action=rtd_add_todo';
 
-        $.post(rtd_ajax_object.ajax_url, formData, function(response) {
+        $.post(rtd_ajax_object.ajax_url, formData, function(response) 
+        {
             if (response.success) {
                 location.reload(); // Reload to show the updated list
             } else {
@@ -69,18 +71,23 @@ jQuery(document).ready(function($)
     });
 
     // Handle Update Todo
-    $(document).on('click', '.rtd-edit-todo', function() {
+    $(document).on('click', '.rtd-edit-todo', function() 
+    {
         var index = $(this).data('index');
         var newTodo = prompt(rtd_ajax_object.new_todo_prompt);
 
-        if (newTodo) {
-            $.post(rtd_ajax_object.ajax_url, {
+        if (newTodo) 
+            {
+            $.post(rtd_ajax_object.ajax_url, 
+                {
                 action: 'rtd_update_todo',
                 index: index,
                 todo: newTodo,
                 rtd_todo_nonce: $('#rtd-todo-form').find('input[name="rtd_todo_nonce"]').val()
-            }, function(response) {
-                if (response.success) {
+            }, function(response) 
+            {
+                if (response.success)
+                    {
                     location.reload(); // Reload to show the updated list
                 } else {
                     alert(response.data);
@@ -90,16 +97,20 @@ jQuery(document).ready(function($)
     });
 
     // Handle Delete Todo
-    $(document).on('click', '.rtd-delete-todo', function() {
+    $(document).on('click', '.rtd-delete-todo', function() 
+    {
         if (confirm(rtd_ajax_object.delete_todo_confirm)) {
             var index = $(this).data('index');
 
-            $.post(rtd_ajax_object.ajax_url, {
+            $.post(rtd_ajax_object.ajax_url, 
+                {
                 action: 'rtd_delete_todo',
                 index: index,
                 rtd_todo_nonce: $('#rtd-todo-form').find('input[name="rtd_todo_nonce"]').val()
-            }, function(response) {
-                if (response.success) {
+            }, function(response) 
+            {
+                if (response.success) 
+                    {
                     location.reload(); // Reload to show the updated list
                 } else {
                     alert(response.data);
@@ -109,7 +120,8 @@ jQuery(document).ready(function($)
     });
 
     // Handle Complete Todo
-    $(document).on('click', '.rtd-complete-todo', function() {
+    $(document).on('click', '.rtd-complete-todo', function() 
+    {
         var index = $(this).data('index');
 
         $.post(rtd_ajax_object.ajax_url, {
@@ -117,9 +129,11 @@ jQuery(document).ready(function($)
             index: index,
             rtd_todo_nonce: $('#rtd-todo-form').find('input[name="rtd_todo_nonce"]').val()
         }, function(response) {
-            if (response.success) {
+            if (response.success) 
+                {
                 location.reload(); // Reload to show the updated list
-            } else {
+            } else 
+            {
                 alert(response.data);
             }
         });

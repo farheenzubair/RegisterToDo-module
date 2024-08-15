@@ -1,6 +1,7 @@
 <?php
 
-function rtd_todo_form() {
+function rtd_todo_form() 
+{
     ob_start(); ?>
     <div class="rtd-form-container rtd-todo-form-container">
         <h2><?php _e('Todo List', 'register-todo'); ?></h2>
@@ -42,7 +43,8 @@ function rtd_todo_form() {
 }
 
 
-function rtd_handle_todo() {
+function rtd_handle_todo() 
+{
     // Check if nonce is valid
     if (!isset($_POST['rtd_todo_nonce']) || !wp_verify_nonce($_POST['rtd_todo_nonce'], 'rtd_todo_action')) 
     {
@@ -51,7 +53,8 @@ function rtd_handle_todo() {
 
     $action = isset($_POST['action']) ? sanitize_text_field($_POST['action']) : '';
 
-    if (isset($_POST['action']) && $_POST['action'] == 'rtd_add_todo') {
+    if (isset($_POST['action']) && $_POST['action'] == 'rtd_add_todo') 
+    {
         $todo = sanitize_text_field($_POST['todo']);
         $current_user = wp_get_current_user();
         $existing_todos = get_user_meta($current_user->ID, 'rtd_todos', true);
@@ -69,11 +72,13 @@ function rtd_handle_todo() {
         $current_user = wp_get_current_user();
         $existing_todos = get_user_meta($current_user->ID, 'rtd_todos', true);
 
-        if (isset($existing_todos[$index])) {
+        if (isset($existing_todos[$index])) 
+        {
             $existing_todos[$index]['text'] = $new_todo_text;
             update_user_meta($current_user->ID, 'rtd_todos', $existing_todos);
             wp_send_json_success(array('redirect' => home_url('/todo')));
-        } else {
+        } else 
+        {
             wp_send_json_error(__('Todo item not found', 'register-todo'));
         }
     }
@@ -83,12 +88,14 @@ function rtd_handle_todo() {
         $index = intval($_POST['index']);
         $current_user = wp_get_current_user();
         $existing_todos = get_user_meta($current_user->ID, 'rtd_todos', true);
-        if (isset($existing_todos[$index])) {
+        if (isset($existing_todos[$index])) 
+        {
             unset($existing_todos[$index]);
             $existing_todos = array_values($existing_todos); // Reindex array
             update_user_meta($current_user->ID, 'rtd_todos', $existing_todos);
             wp_send_json_success(array('redirect' => home_url('/todo')));
-        } else {
+        } else 
+        {
             wp_send_json_error(__('Todo item not found', 'register-todo'));
         }
     }
@@ -102,7 +109,8 @@ function rtd_handle_todo() {
             $existing_todos[$index]['status'] = 'completed';
             update_user_meta($current_user->ID, 'rtd_todos', $existing_todos);
             wp_send_json_success(array('redirect' => home_url('/todo')));
-        } else {
+        } else 
+        {
             wp_send_json_error(__('Todo item not found', 'register-todo'));
         }
     }

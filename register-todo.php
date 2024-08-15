@@ -2,7 +2,6 @@
 /*
 Plugin Name: RegisterToDo
 Description: A plugin for user registration, login, and todo management with AJAX validation.
-Version: 1.0
 Author: Farheen
 Text Domain: register-todo
 Domain Path: /languages
