@@ -59,8 +59,8 @@ function rtd_handle_registration()
     wp_set_auth_cookie($user_id);
 
     wp_send_json_success(array(
-        'redirect' => home_url('/todo'),
-        'message'  => __('Registration successful! You are now logged in and will be redirected to your todo list.', 'register-todo')
+        'redirect' => home_url('/login'),
+        'message'  => __('Registration successful! You are now logged in.', 'register-todo')
     ));
 }
 
