@@ -8,19 +8,17 @@ Domain Path: /languages
 */
 
 // Ensure WordPress is loaded
-if (!defined('ABSPATH')) 
-{
+if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
 // Activation and deactivation hooks
-function rtd_activate() 
-{
-    // No custom tables are created
+function rtd_activate() {
+    // Create custom database tables if needed
+    rtd_create_todos_table();
 }
 
-function rtd_deactivate() 
-{
+function rtd_deactivate() {
     // Cleanup if needed
 }
 
@@ -32,10 +30,10 @@ require_once plugin_dir_path(__FILE__) . 'includes/register-form.php';
 require_once plugin_dir_path(__FILE__) . 'includes/login-form.php';
 require_once plugin_dir_path(__FILE__) . 'includes/todo-form.php';
 require_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php'; 
+require_once plugin_dir_path(__FILE__) . 'includes/rest-api.php'; // Include REST API routes
 
-// Enqueue scripts and styles (to load diff functions in wordpress)
-function rtd_enqueue_scripts() 
-{
+// Enqueue scripts and styles
+function rtd_enqueue_scripts() {
     wp_enqueue_style('rtd-style', plugin_dir_url(__FILE__) . 'public/css/register-todo-style.css');
     wp_enqueue_script('rtd-script', plugin_dir_url(__FILE__) . 'public/js/register-todo-script.js', array('jquery'), null, true);
 
@@ -54,8 +52,10 @@ function rtd_enqueue_scripts()
 add_action('wp_enqueue_scripts', 'rtd_enqueue_scripts');
 
 // Load text domain for translations
-function rtd_load_textdomain() 
-{
-    load_plugin_textdomain( 'registertodo', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+function rtd_load_textdomain() {
+    load_plugin_textdomain('register-todo', false, dirname(plugin_basename(__FILE__)) . '/languages/');
 }
-add_action( 'plugins_loaded', 'rtd_load_textdomain' );
+add_action('plugins_loaded', 'rtd_load_textdomain');
+
+// REST API routes
+require_once plugin_dir_path(__FILE__) . 'includes/rest-api.php';
