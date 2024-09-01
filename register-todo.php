@@ -11,6 +11,11 @@ Domain Path: /languages
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
+// Include WP-CLI commands
+if (defined('WP_CLI') && WP_CLI) {
+    require_once plugin_dir_path(__FILE__) . 'includes/wp-cli-commands.php';
+}
+
 
 // Activation and deactivation hooks
 function rtd_activate() {
