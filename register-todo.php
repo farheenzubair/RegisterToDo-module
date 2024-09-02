@@ -17,15 +17,22 @@ if (defined('WP_CLI') && WP_CLI) {
     require_once plugin_dir_path(__FILE__) . 'includes/wp-cli-commands.php';
 }
 
+// Temporarily add this to test scheduling
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    add_action('init', 'rtd_schedule_cron_job');
+}
+
 
 // Activation and deactivation hooks
 function rtd_activate() {
     // Create custom database tables if needed
     rtd_create_todos_table();
+    rtd_schedule_cron_job(); // Schedule cron job on activation
 }
 
 function rtd_deactivate() {
     // Cleanup if needed
+    rtd_clear_cron_job(); // Clear cron job on deactivation
 }
 
 register_activation_hook(__FILE__, 'rtd_activate');
@@ -37,6 +44,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/login-form.php';
 require_once plugin_dir_path(__FILE__) . 'includes/todo-form.php';
 require_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 require_once plugin_dir_path(__FILE__) . 'includes/rest-api.php'; // Include REST API routes
+require_once plugin_dir_path(__FILE__) . 'includes/email-functions.php'; // Include email functions
 
 // Enqueue scripts and styles
 function rtd_enqueue_scripts() {
@@ -62,3 +70,29 @@ function rtd_load_textdomain() {
 }
 add_action('plugins_loaded', 'rtd_load_textdomain');
 
+// Register custom cron schedule
+function rtd_add_custom_cron_schedule($schedules) {
+    $schedules['daily'] = array(
+        'interval' => 86400, // 24 hours in seconds
+        'display'  => __('Once Daily')
+    );
+    return $schedules;
+}
+add_filter('cron_schedules', 'rtd_add_custom_cron_schedule');
+
+// Schedule the cron event
+function rtd_schedule_cron_job() {
+    if (!wp_next_scheduled('rtd_daily_task_email')) {
+        wp_schedule_event(time(), 'daily', 'rtd_daily_task_email');
+    }
+}
+add_action('wp', 'rtd_schedule_cron_job');
+
+// Clear the scheduled event on plugin deactivation
+function rtd_clear_cron_job() {
+    $timestamp = wp_next_scheduled('rtd_daily_task_email');
+    if ($timestamp) {
+        wp_unschedule_event($timestamp, 'rtd_daily_task_email');
+    }
+}
+add_action('rtd_deactivate', 'rtd_clear_cron_job');
