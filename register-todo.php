@@ -11,7 +11,8 @@ Domain Path: /languages
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
-// Include WP-CLI commands
+
+// Include WP-CLI commands if WP-CLI is defined
 if (defined('WP_CLI') && WP_CLI) {
     require_once plugin_dir_path(__FILE__) . 'includes/wp-cli-commands.php';
 }
@@ -34,7 +35,7 @@ register_deactivation_hook(__FILE__, 'rtd_deactivate');
 require_once plugin_dir_path(__FILE__) . 'includes/register-form.php';
 require_once plugin_dir_path(__FILE__) . 'includes/login-form.php';
 require_once plugin_dir_path(__FILE__) . 'includes/todo-form.php';
-require_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php'; 
+require_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 require_once plugin_dir_path(__FILE__) . 'includes/rest-api.php'; // Include REST API routes
 
 // Enqueue scripts and styles
@@ -53,7 +54,6 @@ function rtd_enqueue_scripts() {
         'delete_todo_confirm' => __('Are you sure you want to delete this todo?', 'register-todo'),
     ));
 }
-
 add_action('wp_enqueue_scripts', 'rtd_enqueue_scripts');
 
 // Load text domain for translations
@@ -62,5 +62,3 @@ function rtd_load_textdomain() {
 }
 add_action('plugins_loaded', 'rtd_load_textdomain');
 
-// REST API routes
-require_once plugin_dir_path(__FILE__) . 'includes/rest-api.php';
