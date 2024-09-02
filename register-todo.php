@@ -22,7 +22,6 @@ if (defined('WP_DEBUG') && WP_DEBUG) {
     add_action('init', 'rtd_schedule_cron_job');
 }
 
-
 // Activation and deactivation hooks
 function rtd_activate() {
     // Create custom database tables if needed
@@ -95,4 +94,4 @@ function rtd_clear_cron_job() {
         wp_unschedule_event($timestamp, 'rtd_daily_task_email');
     }
 }
-add_action('rtd_deactivate', 'rtd_clear_cron_job');
+register_deactivation_hook(__FILE__, 'rtd_clear_cron_job'); // Corrected hook
