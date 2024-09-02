@@ -1,14 +1,13 @@
 <?php
-// Function to send email with pending tasks
+
 function rtd_send_pending_tasks_email() {
     global $wpdb;
 
-    $users = get_users(); // Get all users
+    $users = get_users(); 
+
     foreach ($users as $user) {
         $user_id = $user->ID;
-        $user_email = $user->user_email;
 
-        // Query for pending tasks
         $tasks = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT task_name FROM {$wpdb->prefix}rtd_todos WHERE user_id = %d AND status = 'pending'",
@@ -17,15 +16,24 @@ function rtd_send_pending_tasks_email() {
         );
 
         if ($tasks) {
-            $subject = __('Your Pending Tasks', 'register-todo');
-            $message = __('Here are your pending tasks:', 'register-todo') . "\n\n";
-
+            $task_list = "";
             foreach ($tasks as $task) {
-                $message .= $task->task_name . "\n";
+                $task_list .= "- " . esc_html($task->task_name) . "<br>";
             }
 
-            wp_mail($user_email, $subject, $message);
+            $subject = __('Pending Task Reminder', 'register-todo');
+            $message = sprintf(
+                __("Hello %s,<br><br>your pending tasks:<br><br>%s<br>Best regards,<br>Your To-Do List Team", 'register-todo'),
+                esc_html($user->display_name),
+                $task_list
+            );
+
+            $headers = array('Content-Type: text/html; charset=UTF-8');
+
+            // Send the email
+            wp_mail($user->user_email, $subject, $message, $headers);
         }
     }
 }
+
 add_action('rtd_daily_task_email', 'rtd_send_pending_tasks_email');
